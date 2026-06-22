@@ -15,3 +15,4 @@ data/jobs.db
 *.log
 reports/
 *.egg-info/
+logs_dashboard.txt

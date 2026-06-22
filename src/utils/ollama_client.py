@@ -71,7 +71,7 @@ def _call_ollama_raw(
     prompt: str,
     temperature: float | None = None,
     think: bool = False,
-    num_ctx: int = 4096,
+    num_ctx: int = 8192,
 ) -> str:
     """Llamada directa a la API de Ollama. Sin reintentos."""
     temp = temperature if temperature is not None else MODEL_TEMPERATURES.get(model, 0.1)
@@ -136,7 +136,7 @@ def ollama_call(
     expect_json: bool = False,
     temperature: float | None = None,
     think: bool = False,
-    num_ctx: int = 4096,
+    num_ctx: int = 8192,
     json_retry_instruction: str = "\n\nResponde UNICAMENTE con JSON valido, sin texto adicional.",
 ) -> str | Any:
     """

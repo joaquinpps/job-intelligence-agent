@@ -29,7 +29,7 @@ enriquece empresas con otro modelo, y envía un resumen diario por Telegram.
 
 ### Imports y packaging
 - **`pyproject.toml` + `pip install -e .`** — el proyecto es un paquete instalado.
-- **Sin `sys.path.insert` en ningún módulo.** Si aparece uno, es un error.
+- **Regla: sin `sys.path.insert` en módulos nuevos.** Quedan 3 usos heredados (`src/db/migrate.py`, `src/onboarding/keyword_generator.py`, `src/pipeline/feedback_processor.py`) — deuda conocida pendiente de eliminar; no añadir más.
 - Dependencias de runtime: `requirements.txt`. Herramientas de desarrollo: `requirements-dev.txt`.
 
 ### Configuración
@@ -53,7 +53,7 @@ enriquece empresas con otro modelo, y envía un resumen diario por Telegram.
 
 ### Tests
 - 223 tests passing. Estructura: `tests/unit/`, `tests/integration/`, `tests/manual/`.
-- Fixtures HTML como cassettes en `tests/snapshots/`. No hacer requests reales en tests.
+- Fixtures de respuestas Ollama (JSON) en `tests/fixtures/ollama/`. No hacer llamadas reales a Ollama ni requests HTTP en tests.
 - Antes de cerrar sesión: `pytest tests/ -q` debe pasar con 0 regresiones.
 
 ### Deuda pendiente (no urgente)

@@ -18,6 +18,7 @@ src/onboarding/interviewer.py
 src/onboarding/keyword_generator.py
 src/onboarding/run.py
 src/pipeline/__init__.py
+src/pipeline/backfill_scores.py
 src/pipeline/evaluate.py
 src/pipeline/feedback_processor.py
 src/pipeline/fetch.py
@@ -33,4 +34,5 @@ src/telegram/send.py
 src/utils/__init__.py
 src/utils/candidate_profile.py
 src/utils/cleaner.py
+src/utils/constants.py
 src/utils/ollama_client.py

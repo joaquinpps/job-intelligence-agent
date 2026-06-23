@@ -190,6 +190,7 @@ def extract_cv_data(cv_path: str | Path) -> dict[str, Any]:
         model=MODEL_HR,
         prompt=prompt,
         expect_json=True,
+        num_ctx=8192,  # el CV completo (~3k tokens) + respuesta JSON no cabe en el default 4096
     )
 
     if not isinstance(result, dict):

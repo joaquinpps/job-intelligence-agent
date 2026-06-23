@@ -26,6 +26,7 @@ enriquece empresas con otro modelo, y envía un resumen diario por Telegram.
 - `src/db/schema.sql` es la **única fuente de verdad del schema**. Nunca duplicar columnas en otros archivos.
 - Conexiones siempre con `contextlib.closing(get_connection())` — nunca `conn.close()` manual.
 - `src/db/migrate.py` parsea `schema.sql` directamente para detectar columnas faltantes.
+- **Bootstrap de una DB nueva (gap conocido):** ningún comando crea el schema base desde cero. `init_db.py` aplica migraciones de `src/db/migrations/` (directorio inexistente → DB vacía) y `migrate.py` solo añade columnas/3 tablas auxiliares a tablas ya existentes. Para inicializar: aplicar `src/db/schema.sql` con `executescript` (crea las 15 tablas) y luego `python -m src.db.migrate`. Después, `search_config` arranca vacía → poblarla con `python -m src.onboarding.keyword_generator` o el fetch falla con `no such table: search_config`.
 
 ### Imports y packaging
 - **`pyproject.toml` + `pip install -e .`** — el proyecto es un paquete instalado.
@@ -115,6 +116,20 @@ ruff check src/ && ruff format src/
 que deben ser deterministas. Mismo perfil + misma oferta = mismo veredicto.
 
 Ver `docs/CONVENTIONS.md` para detalles de uso.
+
+**Límites operativos (VRAM):**
+- `num_ctx` máximo seguro: **8192**. `16384` crashea Ollama (OOM / `RemoteDisconnected`). El default global está en 8192 (`src/utils/ollama_client.py`); necesario para extraer el CV completo (4096 truncaba el JSON).
+- Ollama procesa **secuencialmente** — no ejecutar el pipeline y una evaluación a la vez, ni dos pipelines en paralelo (dos instancias golpeando gemma4 lo saturan y lo tumban → `WinError 10061` / conexión rechazada).
+- Clasificar muchas ofertas seguidas puede tumbar el servicio. Usar lotes pequeños (`--limit-eval`). Si Ollama cae, reiniciarlo (`ollama serve`) antes de continuar.
+
+---
+
+## NOTAS DE ENTORNO / TROUBLESHOOTING
+
+- **Antivirus con inspección HTTPS rompe el scraper y pip.** Si aparece `SSL certificate problem: unable to get local issuer certificate` (curl 60) o el mismo error en `pip`, un antivirus (p. ej. AVG, Kaspersky, ESET) está haciendo MITM del tráfico TLS con su propio CA raíz. Solución sin desactivar el AV: exportar el trust store de Windows (incluye el CA del AV) a un PEM y apuntar `CURL_CA_BUNDLE` (y `SSL_CERT_FILE` para pip) a ese fichero. Alternativa rápida para pip: `--trusted-host pypi.org --trusted-host files.pythonhosted.org`.
+- **Encoding en consola Windows (cp1252):** exportar `PYTHONUTF8=1` antes de ejecutar para evitar `UnicodeEncodeError` con los caracteres de los logs (`═`, etc.).
+- **Ejecutar siempre como módulo** (`python -m src.pipeline.run`), nunca por ruta de fichero — es un paquete instalado con `pip install -e .`.
+- **Pipeline desde el dashboard** (`POST /api/pipeline/run`, botón Ejecutar) lanza `run.py --run-id N`; si el proceso muere, el run puede quedar `status='running'` zombie y bloquear el mutex (nuevos lanzamientos devuelven 409). Liberar con `UPDATE search_runs SET status='stopped' WHERE id=N`.
 
 ---
 

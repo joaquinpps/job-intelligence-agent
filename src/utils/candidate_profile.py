@@ -26,17 +26,17 @@ log = logging.getLogger(__name__)
 # Secciones de PERFIL.md y sus regex de extracción
 # Ordenadas como aparecen en el documento
 _SECTION_PATTERNS: list[tuple[str, str]] = [
-    ("Skills técnicas", r"## Skills técnicas\s*\n(.*?)(?=\n##|\Z)"),
-    ("Gap de empleo", r"## Gap de empleo\s*\n(.*?)(?=\n##|\Z)"),
-    ("Educación", r"## Educación\s*\n(.*?)(?=\n##|\Z)"),
-    ("Experiencia", r"## Experiencia\s*\n(.*?)(?=\n##|\Z)"),
-    ("Idiomas", r"## Idiomas\s*\n(.*?)(?=\n##|\Z)"),
-    ("Proyectos", r"## Proyectos\s*\n(.*?)(?=\n##|\Z)"),
-    ("Preferencias laborales", r"## Preferencias laborales\s*\n(.*?)(?=\n##|\Z)"),
-    ("Personal concerns", r"## Personal concerns\s*\n(.*?)(?=\n##|\Z)"),
+    ("Skills técnicas", r"## Skills técnicas\s*\n(.*?)(?=\n## |\Z)"),
+    ("Gap de empleo", r"## Gap de empleo\s*\n(.*?)(?=\n## |\Z)"),
+    ("Educación", r"## Educación\s*\n(.*?)(?=\n## |\Z)"),
+    ("Experiencia", r"## Experiencia\s*\n(.*?)(?=\n## |\Z)"),
+    ("Idiomas", r"## Idiomas\s*\n(.*?)(?=\n## |\Z)"),
+    ("Proyectos", r"## Proyectos\s*\n(.*?)(?=\n## |\Z)"),
+    ("Preferencias laborales", r"## Preferencias laborales\s*\n(.*?)(?=\n## |\Z)"),
+    ("Personal concerns", r"## Personal concerns\s*\n(.*?)(?=\n## |\Z)"),
     (
         "Entorno preferido / a evitar",
-        r"## Entorno preferido / a evitar\s*\n(.*?)(?=\n##|\Z)",
+        r"## Entorno preferido / a evitar\s*\n(.*?)(?=\n## |\Z)",
     ),
 ]
 
